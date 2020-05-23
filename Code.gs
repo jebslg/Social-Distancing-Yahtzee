@@ -1,4 +1,4 @@
-  var sheet = SpreadsheetApp.openById("19zl68ksLiff3eYE-y_LfplhkD3I0MFsGjOOm5Y5lHYA").getSheets()[0];
+  var sheet = SpreadsheetApp.openById("your_spreadsheet_id").getSheets()[0];
 
 function doGet() {
 //  return HtmlService.createHtmlOutputFromFile('index')
