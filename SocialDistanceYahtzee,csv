@@ -1,0 +1,25 @@
+dice:
+,Names:
+Upper Section,How to Score
+Aces,count & add aces
+Twos,count & add twos
+Threes,count & add threes
+Fours,count & add fours
+Fives,count & add fives
+Sixes,count & add sixes
+Total,------------>
+Bonus if total>=63,Score 35
+Total of upper,------------>
+,
+Lower Section
+3 of a Kind,total of all dice
+4 of a Kind,total of all dice
+Full House,Score: 25
+Sm Straight,Score: 30
+Lg.Straight,Score: 40
+Yahtzee,Score: 50
+Chance,total of all dice
+Yahtzee bonus
+Total Lower,------------>
+Total Upper,------------>
+Grand Total,------------>
