@@ -13,8 +13,9 @@ To set up this game,
   1. Start a new Google Scripts project and copy Code.ga and yahtzee.html into the project.
   2. Create a new Google Sheets file and import SocialDistanceYahtzee.csv
   3. Copy the Sheet id into the first line of the Code.ps file. 
-  4. Save the script, publish it and share it with family and friends.
-  5. Make sure each person playing is assigned a unique column.  The columns refer to the column label where the person's score
+  4. Share the Google Sheet with 'Anyone with a link' (if you want to let the other players view all scores and dice rolls
+  5. Save the script, publish it and share it with family and friends.
+  6. Make sure each person playing is assigned a unique column.  The columns refer to the column label where the person's score
      is stored on the Google Sheet you created.  The columns can be changed arbitrarily to whatever is convenient.  The website has
      space for four players so that several family members can share a devise, but it is not necessary.  Columns C, D, E, F, etc. can
      all be on different devices as long as the score table on the webpage is properly labeled.
