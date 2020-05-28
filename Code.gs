@@ -1,4 +1,4 @@
-  var sheet = SpreadsheetApp.openById("your_spreadsheet_id").getSheets()[0];
+  var sheet = SpreadsheetApp.openById("19zl68ksLiff3eYE-y_LfplhkD3I0MFsGjOOm5Y5lHYA").getSheets()[0];
 
 function doGet() {
 //  return HtmlService.createHtmlOutputFromFile('index')
@@ -13,6 +13,21 @@ function include(filename) {
       .setSandboxMode(HtmlService.SandboxMode.IFRAME)
       .getContent();
 }
+
+function getDiceData(){
+  range=sheet.getRange("B1:F1");
+  return range.getValues();
+}
+
+function getPlayerData(column){
+//    var sheet = SpreadsheetApp.openById("19zl68ksLiff3eYE-y_LfplhkD3I0MFsGjOOm5Y5lHYA").getSheets()[0];
+//  range=sheet.getRange("G1");
+//  range.setValue(column);
+  cellRange=column+"2:"+column+"25";
+  range=sheet.getRange(cellRange);
+  return range.getValues();
+}
+
 function showDice(side1,side2,side3,side4,side5)  {
 
   range=sheet.getRange("B1");
