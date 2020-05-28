@@ -2,7 +2,9 @@
 <html>
 <style>
 
-/* Header/logo Title */
+/*  Note that there are 3 places where google scripts functions are called
+
+ Header/logo Title */
 .header {
   padding: 10px;
   text-align: center;
@@ -40,7 +42,7 @@ table,td,th {
   text-align: center;
 }
 
-<table width="150">
+<table width="100">
 <tr>
 <td width=100><\td>
 <td width=50><\td>
@@ -54,14 +56,23 @@ table,td,th {
 <p id="demo" style="font-size:20px; text-align: left">
          Game instructions:</p>
 <p style="text-align: left">Check the boxes under the dice that you do not
-want to reroll.  This program is not meant to automate all game aspects and
-does not enforce Yahtzee rules.  <br><br>
+want to reroll. <br><br>
 
-Each player or family should load this game on their own device.  Players need
-to coordinate turns.  This screen only shows dice rolls and scores of local
-players.  All dice rolls are shown and scores recorded on a master Google
-Sheet (see link).  The column refers to where the player's score is stored on the
-spreadsheet.  The column can be changed and each player's should be unique..
+Each player or family loads this game on his/her own device.  All players using the same
+device should enter their names and press the "Set up" button. The player button above those
+score columns will be disabled.   When you want to total your scores, press the Total button
+at the bottom of the column.<br><br>
+
+Then, each person should be
+assigned a different column which refers to where the score is stored on the master
+spreadsheet.  Players coordinate turns.  To see another player's dice roll, press the
+button above the person's column letter.  The computer will automatically fill in
+names of other players when you press the player button.  When you press the 'Player'
+button above the score column, the program will
+display the most recent dice roll and the name and scores of the person who has been
+assigned to the column listed.
+
+
 <br>
 </div>
 <a href="https://docs.google.com/spreadsheets/d/19zl68ksLiff3eYE-y_LfplhkD3I0MFsGjOOm5Y5lHYA/" target="_blank">
@@ -89,19 +100,30 @@ Your browser does not support the canvas element.
 			<canvas id="dice-side-5"  width=100 height=100>0</canvas><br>
 			<input type="checkbox" id="dice5"></div>
 	</div>
-    <br><button onclick="setUpPeople()" style="width: 125px"> Add Players to Main Score Sheet</button>
+    <br><button onclick="setUpPeople()" style="width: 90px"> Set up local players</button>
 	<button onclick="rollDice()">Roll Dice</button>
+        <span id="rollNumber">Next player</span>
 	<br><br>
 
 <!--  Now score the dice -->
-<table>
+<table id="wrapper">
 <caption> Score Sheet </caption>
+  <tr>
+    <td>Get Score</td>
+    <td><button onclick="getScores(1)" id="player1">Player 1</button></td>
+    <td><button onclick="getScores(2)" id="player2">Player 2</button></td>
+    <td><button onclick="getScores(3)" id="player3">Player 3</button></td>
+    <td><button onclick="getScores(4)" id="player4">Player 4</button></td>
+    <td><button onclick="getScores(5)" id="player5">Player 5</button></td>
+    <td><button onclick="getScores(6)" id="player6">Player 6</button></td>
   <tr>
     <th>Name</th>
     <th> <input type="text" id="name1" size=8></th>
     <th> <input type="text" id="name2" size=8></th> 
     <th> <input type="text" id="name3" size=8></th>
     <th> <input type="text" id="name4" size=8></th> 
+    <th> <input type="text" id="name5" size=8></th>
+    <th> <input type="text" id="name6" size=8></th> 
   </tr>
   <tr>
     <th>Column</th>
@@ -109,6 +131,8 @@ Your browser does not support the canvas element.
     <th> <input type="text" id="col2" size=2 value="D"></th> 
     <th> <input type="text" id="col3" size=2 value="E"></th>
     <th> <input type="text" id="col4" size=2 value="F"></th> 
+    <th> <input type="text" id="col5" size=2 value="G"></th>
+    <th> <input type="text" id="col6" size=2 value="H"></th> 
   </tr>
  <!-- <tr>
     <th>Upper Section</th>
@@ -123,6 +147,8 @@ Your browser does not support the canvas element.
     <td><button onclick="upper(1,2)" id="b12">Aces</button></td>
     <td><button onclick="upper(1,3)" id="b13">Aces</button></td>
     <td><button onclick="upper(1,4)" id="b14">Aces</button></td>
+    <td><button onclick="upper(1,5)" id="b15">Aces</button></td>
+    <td><button onclick="upper(1,6)" id="b16">Aces</button></td>
   </tr>
   <tr>
     <td>Twos</td>
@@ -130,6 +156,8 @@ Your browser does not support the canvas element.
     <td><button onclick="upper(2,2)" id="b22">Twos</button></td>
     <td><button onclick="upper(2,3)" id="b23">Twos</button></td>
     <td><button onclick="upper(2,4)" id="b24">Twos</button></td>
+    <td><button onclick="upper(2,5)" id="b25">Twos</button></td>
+    <td><button onclick="upper(2,6)" id="b26">Twos</button></td>
   </tr>
   <tr>
     <td>Threes</td>
@@ -137,6 +165,8 @@ Your browser does not support the canvas element.
     <td><button onclick="upper(3,2)" id="b32">Threes</button></td>
     <td><button onclick="upper(3,3)" id="b33">Threes</button></td>
     <td><button onclick="upper(3,4)" id="b34">Threes</button></td>
+    <td><button onclick="upper(3,5)" id="b35">Threes</button></td>
+    <td><button onclick="upper(3,6)" id="b36">Threes</button></td>
   </tr>
   <tr>
     <td>Fours </td>
@@ -144,6 +174,8 @@ Your browser does not support the canvas element.
     <td><button onclick="upper(4,2)" id="b42">Fours</button></td>
     <td><button onclick="upper(4,3)" id="b43">Fours</button></td>
     <td><button onclick="upper(4,4)" id="b44">Fours</button></td>
+    <td><button onclick="upper(4,5)" id="b43">Fours</button></td>
+    <td><button onclick="upper(4,6)" id="b44">Fours</button></td>
   </tr>
   <tr>
     <td>Fives </td>
@@ -151,6 +183,8 @@ Your browser does not support the canvas element.
     <td><button onclick="upper(5,2)" id="b52">Fives</button></td>
     <td><button onclick="upper(5,3)" id="b53">Fives</button></td>
     <td><button onclick="upper(5,4)" id="b54">Fives</button></td>
+    <td><button onclick="upper(5,5)" id="b53">Fives</button></td>
+    <td><button onclick="upper(5,6)" id="b54">Fives</button></td>
   </tr>
   <tr>
     <td>Sixes </td>
@@ -158,34 +192,44 @@ Your browser does not support the canvas element.
     <td><button onclick="upper(6,2)" id="b62">Sixes</button></td>
     <td><button onclick="upper(6,3)" id="b63">Sixes</button></td>
     <td><button onclick="upper(6,4)" id="b64">Sixes</button></td>
+    <td><button onclick="upper(6,5)" id="b63">Sixes</button></td>
+    <td><button onclick="upper(6,6)" id="b64">Sixes</button></td>
   </tr>
   <tr>
     <td>SubTotal</td>
-    <th><div id="total1"> 0</div></th>
-    <th><div id="total2"> 0</div></th>
-    <th><div id="total3"> 0</div></th>
-    <th><div id="total4"> 0</div></th>
+    <th><div id="subtotal1"> 0</div></th>
+    <th><div id="subtotal2"> 0</div></th>
+    <th><div id="subtotal3"> 0</div></th>
+    <th><div id="subtotal4"> 0</div></th>
+    <th><div id="subtotal5"> 0</div></th>
+    <th><div id="subtotal6"> 0</div></th>
   </tr>
   <tr>
-    <th>Lower Section</th>
-    <th>Score</th> 
+   <th>Lower Section</th>
+<!--   <th>Score</th> 
    <th>Score</th>
    <th>Score</th>
    <th>Score</th>
+   <th>Score</th>
+   <th>Score</th>  -->
   </tr>
   <tr>
     <td>Three of a Kind</td>
-    <td><button onclick="pickThreeKind(1)" id=threeKind1>3 Same</button></td>
-    <td><button onclick="pickThreeKind(2)" id=threeKind2>3 Same</button></td>
-    <td><button onclick="pickThreeKind(3)" id=threeKind3>3 Same</button></td>
-    <td><button onclick="pickThreeKind(4)" id=threeKind4>3 Same</button></td>
+    <td><button onclick="pickKind(3,1)" id=kind31>3 Same</button></td>
+    <td><button onclick="pickKind(3,2)" id=kind32>3 Same</button></td>
+    <td><button onclick="pickKind(3,3)" id=kind33>3 Same</button></td>
+    <td><button onclick="pickKind(3,4)" id=kind34>3 Same</button></td>
+    <td><button onclick="pickKind(3,5)" id=kind36>3 Same</button></td>
+    <td><button onclick="pickKind(3,6)" id=kind36>3 Same</button></td>
   </tr>
   <tr>
     <td>Four of a Kind</td>
-    <td><button onclick="pickFourKind(1)" id=fourKind1>4 Same</button></td>
-    <td><button onclick="pickFourKind(2)" id=fourKind2>4 Same</button></td>
-    <td><button onclick="pickFourKind(3)" id=fourKind3>4 Same</button></td>
-    <td><button onclick="pickFourKind(4)" id=fourKind4>4 Same</button></td>
+    <td><button onclick="pickKind(4,1)" id=kind41>4 Same</button></td>
+    <td><button onclick="pickKind(4,2)" id=kind42>4 Same</button></td>
+    <td><button onclick="pickKind(4,3)" id=kind43>4 Same</button></td>
+    <td><button onclick="pickKind(4,4)" id=kind44>4 Same</button></td>
+    <td><button onclick="pickKind(4,5)" id=kind45>4 Same</button></td>
+    <td><button onclick="pickKind(4,6)" id=kind46>4 Same</button></td>
   </tr>
   <tr>
     <td>Full House</td>
@@ -193,6 +237,8 @@ Your browser does not support the canvas element.
     <td><button onclick="pickFullHouse(2)" id=fullHouse2>3 + 2</button></td>
     <td><button onclick="pickFullHouse(3)" id=fullHouse3>3 + 2</button></td>
     <td><button onclick="pickFullHouse(4)" id=fullHouse4>3 + 2</button></td>
+    <td><button onclick="pickFullHouse(5)" id=fullHouse5>3 + 2</button></td>
+    <td><button onclick="pickFullHouse(6)" id=fullHouse6>3 + 2</button></td>
   </tr>
   <tr>
     <td>Small Straight</td>
@@ -200,20 +246,17 @@ Your browser does not support the canvas element.
     <td><button onclick="picksmStraight(2)" id=smStraight2>4 in order</button></td>
     <td><button onclick="picksmStraight(3)" id=smStraight3>4 in order</button></td>
     <td><button onclick="picksmStraight(4)" id=smStraight4>4 in order</button></td>
+    <td><button onclick="picksmStraight(5)" id=smStraight5>4 in order</button></td>
+    <td><button onclick="picksmStraight(6)" id=smStraight6>4 in order</button></td>
   </tr>
   <tr>
     <td>Large Straight</td>
-    <td><button onclick="picklgStraight(1)" id=lgStraight1>4 in order</button></td>
-    <td><button onclick="picklgStraight(2)" id=lgStraight2>4 in order</button></td>
-    <td><button onclick="picklgStraight(3)" id=lgStraight3>4 in order</button></td>
-    <td><button onclick="picklgStraight(4)" id=lgStraight4>4 in order</button></td>
-  </tr>
-  <tr>
-    <td>Chance</td>
-    <td><button onclick="pickChance(1)" id=chance1>dice sum</button></td>
-    <td><button onclick="pickChance(2)" id=chance2>dice sum</button></td>
-    <td><button onclick="pickChance(3)" id=chance3>dice sum</button></td>
-    <td><button onclick="pickChance(4)" id=chance4>dice sum</button></td>
+    <td><button onclick="picklgStraight(1)" id=lgStraight1>5 in order</button></td>
+    <td><button onclick="picklgStraight(2)" id=lgStraight2>5 in order</button></td>
+    <td><button onclick="picklgStraight(3)" id=lgStraight3>5 in order</button></td>
+    <td><button onclick="picklgStraight(4)" id=lgStraight4>5 in order</button></td>
+    <td><button onclick="picklgStraight(5)" id=lgStraight5>5 in order</button></td>
+    <td><button onclick="picklgStraight(6)" id=lgStraight6>5 in order</button></td>
   </tr>
   <tr>
     <td>Yahtzee</td>
@@ -221,6 +264,17 @@ Your browser does not support the canvas element.
     <td><button onclick="pickYahtzee(2)" id=yahtzee2>5 same</button></td>
     <td><button onclick="pickYahtzee(3)" id=yahtzee3>5 same</button></td>
     <td><button onclick="pickYahtzee(4)" id=yahtzee4>5 same</button></td>
+    <td><button onclick="pickYahtzee(5)" id=yahtzee5>5 same</button></td>
+    <td><button onclick="pickYahtzee(6)" id=yahtzee6>5 same</button></td>
+  </tr> 
+  <tr>
+    <td>Chance</td>
+    <td><button onclick="pickChance(1)" id=chance1>dice sum</button></td>
+    <td><button onclick="pickChance(2)" id=chance2>dice sum</button></td>
+    <td><button onclick="pickChance(3)" id=chance3>dice sum</button></td>
+    <td><button onclick="pickChance(4)" id=chance4>dice sum</button></td>
+    <td><button onclick="pickChance(5)" id=chance5>dice sum</button></td>
+    <td><button onclick="pickChance(6)" id=chance6>dice sum</button></td>
   </tr>
   <tr>
     <td>Yahtzee Bonus</td>
@@ -228,34 +282,70 @@ Your browser does not support the canvas element.
     <td><button onclick="pickBonus(2)" id=bonus2>0</button></td>
     <td><button onclick="pickBonus(3)" id=bonus3>0</button></td>
     <td><button onclick="pickBonus(4)" id=bonus4>0</button></td>
+    <td><button onclick="pickBonus(5)" id=bonus5>0</button></td>
+    <td><button onclick="pickBonus(6)" id=bonus6>0</button></td>
   </tr>
-
+    <td>Total</td>
+    <td><button onclick="computeTotal(1)" id=total1>score</button></td>
+    <td><button onclick="computeTotal(2)" id=total2>score</button></td>
+    <td><button onclick="computeTotal(3)" id=total3>score</button></td>
+    <td><button onclick="computeTotal(4)" id=total4>score</button></td>
+    <td><button onclick="computeTotal(5)" id=total5>score</button></td>
+    <td><button onclick="computeTotal(6)" id=total6>score</button></td>
 </table>
 
 <script>
 
 var diceValues=[0, 0, 0, 0, 0];
+var diceByNum=[0, 0, 0, 0, 0, 0];
+var rollNum=1;
 
 function rollADie(number) {
-	diceCheckbox="dice"+number;
-	dicePic="dice-side-"+number;
+	var diceCheckbox="dice"+number;
 	if (! document.getElementById(diceCheckbox).checked) {
-	  var canvas = document.getElementById(dicePic);
-	  var ctx = canvas.getContext("2d");
 	  var roll=Math.floor( Math.random() * 6 ) + 1;
-	  drawDice(ctx, 10, 10, 75, roll);
+          drawADie(number,roll);
 	  diceValues[number-1]=roll;
-      return(roll);
           }
+      diceByNum[diceValues[number-1]-1]++;
+      return(diceValues[number-1]);
+}
+
+function drawADie(number,roll) {
+	var dicePic="dice-side-"+number;
+	var canvas = document.getElementById(dicePic);
+	var ctx = canvas.getContext("2d");
+	drawDice(ctx, 10, 10, 75, roll);
 }
 
 function rollDice(){
 
+    var i;
+    if (rollNum>3) {
+    document.getElementById("rollNumber").innerHTML="Score your dice.";
+//set up check for button press. Player can decide to score at any time
+//three rolls are not required
+    const wrapper = document.getElementById('wrapper');
+    wrapper.addEventListener('click', (event) => {
+    const isButton = event.target.nodeName === 'BUTTON';
+    rollNum=1;
+    document.getElementById("rollNumber").innerHTML="Next Player";
+     console.dir(event.target.id);}) 
+     return; 
+    if (!isButton) {
+       return;
+     }
+   }
+    document.getElementById("rollNumber").innerHTML="Roll: "+rollNum;
+    rollNum++;
+
+    diceByNum=[0, 0, 0, 0, 0, 0];
     side1=rollADie(1);
     side2=rollADie(2);
     side3=rollADie(3);
     side4=rollADie(4);
     side5=rollADie(5);
+console.log(diceByNum);
     google.script.run.showDice(side1,side2,side3,side4,side5);
 }
 
@@ -349,88 +439,172 @@ function pickChance(player) {
   var diceSum=diceValues[0]+diceValues[1]+diceValues[2]+diceValues[3]+diceValues[4];
   var button="chance"+player;
   changeToScore(button,diceSum);
-  cell=document.getElementById('col'+player.toString()).value+"21";
+  var cell=document.getElementById('col'+player.toString()).value+"21";
   recordScore(cell,diceSum)
 }
 
-function pickThreeKind(player) {
-  var diceSum=diceValues[0]+diceValues[1]+diceValues[2]+diceValues[3]+diceValues[4];
-  var button="threeKind"+player;
-  changeToScore(button,diceSum);
-  cell=document.getElementById('col'+player.toString()).value+"15";
-  recordScore(cell,diceSum)
-}
 
-function pickFourKind(player) {
-  var diceSum=diceValues[0]+diceValues[1]+diceValues[2]+diceValues[3]+diceValues[4];
-  var button="fourKind"+player;
-  changeToScore(button,diceSum);
-  cell=document.getElementById('col'+player.toString()).value+"16";
-  recordScore(cell,diceSum)
+function pickKind (number,player) {
+
+  var button="kind"+number+player;
+  cell=document.getElementById('col'+player.toString()).value+(12+number).toString();
+  var isCorrect=false;
+  var i;
+  for (i=0; i<6; i++) { //iterate over possible dice values
+    if (diceByNum[i]>=number) {isCorrect=true;}
+   }
+  if (isCorrect) {
+    var diceSum=diceValues[0]+diceValues[1]+diceValues[2]+diceValues[3]+diceValues[4];
+    changeToScore(button,diceSum);
+    recordScore(cell,diceSum);
+  }
+  else {alert("You do not have "+number+" of a kind, so you score 0.");
+    changeToScore(button,0);
+    recordScore(cell,0);
+  }
 }
 
 function pickFullHouse(player) {
   var button="fullHouse"+player;
-  changeToScore(button,25);
   cell=document.getElementById('col'+player.toString()).value+"17";
-  recordScore(cell,25)
+  var i;
+  var isThree=false;
+  var isTwo=false;
+  for (i=0; i<6; i++) { //iterate over possible dice values
+    if (diceByNum[i]==3) {isThree=true;}
+    if (diceByNum[i]==2) {isTwo=true;}
+   }
+  if (isThree && isTwo) {
+    changeToScore(button,25);
+    recordScore(cell,25);
+  }
+  else {alert("You do not have a full house, so score is 0.");
+    changeToScore(button,0);
+    recordScore(cell,0);
+   }
 }
 
 function picksmStraight(player) {
-  var button="smStraight"+player;
-  changeToScore(button,30);
-  cell=document.getElementById('col'+player.toString()).value+"18";
-  recordScore(cell,30)
+//  the only options for a small straight are 1234,2345,3456
+// but the 5th die could be anything
+    var isCorrect=false;
+    var score = 0;
+    var dice1,dice2,dice3,dice4,dice5,dice6;
+    dice1=diceByNum[0];
+    dice2=diceByNum[1];
+    dice3=diceByNum[2];
+    dice4=diceByNum[3];
+    dice5=diceByNum[4];
+    dice6=diceByNum[5];
+    var button="smStraight"+player;
+    cell=document.getElementById('col'+player.toString()).value+"18";
+    if (dice3>0 && dice4>0)  {
+      if ((dice1>0 && dice2>0) || (dice2>0 && dice5>0) || (dice5>0 && dice6>0)) {
+         isCorrect=true;
+         score=30;
+      }
+      else {
+         alert ("You do not have a small straight, so score is zero.");
+      } }
+    else {
+      alert ("You do not have a small straight, so score is zero.");
+    }
+    changeToScore(button,score);
+    recordScore(cell,score);
 }
 
 function picklgStraight(player) {
   var button="lgStraight"+player;
-  changeToScore(button,40);
-  cell=document.getElementById('col'+player.toString()).value+"19";
-  recordScore(cell,40)
+  var cell=document.getElementById('col'+player.toString()).value+"19";
+  if ((diceByNum.toString()=="0,1,1,1,1,1") || (diceByNum.toString()=="1,1,1,1,1,0")) {
+    changeToScore(button,40);
+    recordScore(cell,40);
+  }
+  else {
+    alert ("You do not have a large straight, so score is 0.");
+    changeToScore(button,0);
+    recordScore(cell,0);
+  }
 
 }
 
 function pickYahtzee(player) {
   var button="yahtzee"+player;
-  changeToScore(button,50);
+  var isYahtzee=false;
   cell=document.getElementById('col'+player.toString()).value+"20";
-  recordScore(cell,50)
+  var i;
+  for (i=0; i<6; i++) { //iterate over possible dice values
+    if (diceByNum[i]==5) {isYahtzee=true;}
+  }
+  if (isYahtzee) {
+    changeToScore(button,50);
+    recordScore(cell,50) }
+  else {alert ("Sorry, you do not have 5 of a kind, so score 0 for Yahtzee.");
+    changeToScore(button,0);
+    recordScore(cell,0); }
 }
 
 function pickBonus(player) {
   var button="bonus"+player;
   score=parseInt(document.getElementById(button).innerHTML);
-  if (score>=400) {
-     alert("Too many Yahtzees!  You must be cheating.");
-     }
-   else {
-    document.getElementById(button).innerHTML = score+100;
-    document.getElementById(button).style.background='#FFFFFF';
-    cell=document.getElementById('col'+player.toString()).value+"22";
-    recordScore(cell,score+100);
+ var isYahtzee=false;
+  var i;
+  for (i=0; i<6; i++) { //iterate over possible dice values
+    if (diceByNum[i]==5) {isYahtzee=true;}
   }
+  if (isYahtzee) {
+    if (score<400) {  //check if player has had more than 5 Yahtzees
+       if (document.getElementById("yahtzee"+player).innerHTML=="50") {
+// player has already taken first Yahtzee space, so gets 100 points bonus
+          document.getElementById(button).innerHTML = score+100;
+          document.getElementById(button).style.background='#FFFFFF';
+          cell=document.getElementById('col'+player.toString()).value+"22";
+          recordScore(cell,100) }
+        else { // give player credit for first Yahtzee
+          button="yahtzee"+player;
+          changeToScore(button,50);
+          cell=document.getElementById('col'+player.toString()).value+"20";
+          recordScore(cell,50) }
+    }
+    else {alert("Too many Yahtzees!  You must be cheating.");}
+  }
+  else {alert (
+  "Sorry, you don't have a Yahtzee.  Pick the Yahtzee button if you need to score 0 there");
+       }
 }
 
 function upper(number,player) {
    var rowlabel = ["aces","twos","threes","fours","fives","sixes"];
-   var count=0;
+   diceByNum=[0,0,0,0,0,0];
    var i;
    for (i=0; i<5; i++) {
-     if (diceValues[i]==number)
-       {count ++;}
-   }  
-  var scorebox="b"+number.toString()+player.toString();
-  changeToScore(scorebox,count*number);
-//     now update the total score
-  var total = document.getElementById( 'total'+player.toString()).innerHTML;
-  document.getElementById( 'total'+player.toString()).innerHTML = parseInt(total)+number*count;
-//now write the score to the Google Sheet
-  cell=document.getElementById('col'+player.toString()).value+(number+3).toString();
-//  document.getElementById( 'demo').innerHTML=cell;
+     diceByNum[diceValues[i]-1] ++;
+       }
+    var count=diceByNum[number-1];
+   
+    var scorebox="b"+number.toString()+player.toString();
+    changeToScore(scorebox,count*number);
+// update the total score
+    var total = document.getElementById( 'subtotal'+player.toString()).innerHTML;
+    document.getElementById( 'subtotal'+player.toString()).innerHTML = parseInt(total)+number*count;
+// write the score to the Google Sheet
+    cell=document.getElementById('col'+player.toString()).value+(number+3).toString();
     recordScore(cell,number*count);
-  
 }
+
+function computeTotal(player) {
+   var category=["subtotal","kind3","kind4","fullHouse","smStraight","lgStraight","yahtzee","chance","bonus"];
+   var cell="subtotal"+player;
+   var total=parseInt(document.getElementById(cell).innerHTML);
+   if (total>=63) {total=total+35}  //upper section bonus
+    for (i=1; i < 9; i++){
+     cell=category[i]+player;
+     if (document.getElementById(cell).disabled) {
+         total=total+parseInt(document.getElementById(cell).innerHTML);
+       }
+   }
+    document.getElementById("total"+player.toString()).innerHTML=total;  
+ }
 
 function changeToScore (button,score) {
 //     first put the score in the correct box, disable the button
@@ -444,20 +618,83 @@ function changeToScore (button,score) {
 function setUpPeople(){
   for (i=1; i<=4; i++) {
   name=document.getElementById("name"+i.toString()).value;
-//  document.getElementById("demo").innerHTML=name;
   if (name.length>0) {
-    column=document.getElementById("col"+i.toString()).value;
-    google.script.run.setUpScore(name,column);
-    }
- }
+     column=document.getElementById("col"+i.toString()).value;
+     google.script.run.setUpScore(name,column);
+     document.getElementById("player"+i.toString()).disabled = true;
+     }
+   }
 }
 
 function recordScore(cell,score){
-//just call the function in Code.gs that communicates with the
-//Google Sheet.  Use a local function so I can comment it out
-//easily and use it as a stand alone code.
-    google.script.run.recordScore(cell,score);
+//Call the function in Code.gs that communicates with the
+//Google Sheet.  Several functions call this one so that
+//this is the only call to the method in Code.gs in this file.
+  google.script.run.recordScore(cell,score);
+
+//also uncheck all dice for next player
+  var i;
+  for (i=1; i<=5; i++) {
+    document.getElementById("dice"+i).checked=false; }
+  rollNum=1;
+    document.getElementById("rollNumber").innerHTML="Next Player";
 }
+
+function getScores(player) {
+    var column=document.getElementById("col"+player.toString()).value;
+
+      google.script.run.withSuccessHandler(showDiceData).getDiceData();// uncomment this line in google scripts
+      google.script.run.withSuccessHandler(showPlayerData).withUserObject(player).getPlayerData(column);// uncomment this line in google scripts
+}
+
+
+function showPlayerData(data,player){
+
+//  this section is only needed in google scripts.  Otherwise remove.
+    var html = "";
+    var scores=new Array(24);  
+//  data is retrieved from Google Sheet
+    html += data[0];
+    scores[0]=""+data[0];
+    for (var i=1; i<24; i++) {
+        html += "," + data[i];
+     }
+   scores=html.split(",");
+   
+   var i;
+   document.getElementById("name"+player.toString()).value=scores[0];
+   var category=["kind3","kind4","fullHouse","smStraight","lgStraight","yahtzee","chance","bonus"];
+   for (i=1; i <= 6; i++){
+     var cell="b"+i+player;
+     changeToScore(cell,scores[i+1]);
+   }
+   document.getElementById("subtotal"+player.toString()).innerHTML=scores[10];
+   for (i=0; i < 8; i++){
+     var cell=category[i]+player;
+     changeToScore(cell,scores[i+13]);
+   }
+    document.getElementById("total"+player.toString()).innerHTML=scores[23];  
+ }
+
+function showDiceData(data){
+
+//  this section is only needed in google scripts.  Otherwise remove.
+    var diceSide=new Array; 
+//      var html = "";
+//    console.log(data[0]);
+    for (var i=0; i<5; i++) {
+//        html += "," + data[0][i];
+         diceSide[i]=data[0][i];
+     }
+//   diceSide=html.split(",");
+//   console.log(diceSide);
+
+//  data retrieved from Google sheet
+   var i
+   for (i=1; i <= 5; i++){
+      drawADie(i,diceSide[i-1]);
+     }
+  }
 </script>
 </body>
 </html>
