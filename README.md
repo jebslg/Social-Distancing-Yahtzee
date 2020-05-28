@@ -61,6 +61,7 @@ Bob   Phil
   6.  Decide who goes first and begin playing.
   7.  When another player is playing, you can press the 'Player' button at the top of that player's column to see the most recent
       dice roll and that person's scores.
+  8.  At some point, someone needs to erase old game scores from the spreadsheet
       
  The Google Sheets will still show the last dice roll and scores of all players and it will update automatically on a computer
  or using the Sheets app (on a mobile device browser, I don't think it updates automatically).
